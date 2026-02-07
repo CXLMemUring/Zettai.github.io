@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Portal - zett.ai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-container span {
+            font-size: 1.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .hero {
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1em;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .document-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .document-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .document-icon {
+            flex-shrink: 0;
+        }
+
+        .document-info h3 {
+            font-size: 1.4em;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .document-info .meta {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .document-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 12px 28px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .pdf-viewer {
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-viewer h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .viewer-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        .viewer-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            height: 700px;
+        }
+
+        .viewer-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .pdf-frame {
+            display: none;
+        }
+
+        .pdf-frame.active {
+            display: block;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 30px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            header {
+                padding: 15px 0;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo-container span {
+                font-size: 1.2em;
+            }
+
+            .back-link {
+                font-size: 0.9em;
+            }
+
+            .hero {
+                padding: 40px 0 25px;
+            }
+
+            .hero h1 {
+                font-size: 1.6em;
+            }
+
+            .hero p {
+                font-size: 0.95em;
+            }
+
+            .badge {
+                font-size: 0.75em;
+                padding: 4px 12px;
+            }
+
+            .documents-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 25px 0;
+            }
+
+            .document-card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .document-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .document-icon svg {
+                width: 50px;
+                height: 50px;
+            }
+
+            .document-info h3 {
+                font-size: 1.2em;
+            }
+
+            .document-description {
+                font-size: 0.9em;
+                margin-bottom: 20px;
+            }
+
+            .document-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                justify-content: center;
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            .pdf-viewer {
+                margin-top: 40px;
+                padding: 25px 0;
+            }
+
+            .pdf-viewer h2 {
+                font-size: 1.3em;
+                margin-bottom: 20px;
+            }
+
+            .viewer-container {
+                height: 450px;
+                border-radius: 10px;
+            }
+
+            .viewer-tabs {
+                flex-direction: row;
+                gap: 8px;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 0.85em;
+                flex: 1;
+            }
+
+            footer {
+                margin-top: 40px;
+                padding: 20px 0;
+            }
+
+            footer p {
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .hero h1 {
+                font-size: 1.4em;
+            }
+
+            .document-info h3 {
+                font-size: 1.1em;
+            }
+
+            .viewer-container {
+                height: 350px;
+            }
+
+            .tab-btn {
+                padding: 6px 10px;
+                font-size: 0.75em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo-container">
+                <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="35" fill="url(#logoGrad)"/>
+                    <circle cx="38" cy="45" r="3" fill="white"/>
+                    <circle cx="62" cy="45" r="3" fill="white"/>
+                    <path d="M 35 55 Q 50 65 65 55" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>
+                <span>zett.ai Portal</span>
+            </div>
+            <a href="../" class="back-link">Back to Main Site</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <span class="badge">Insider Access</span>
+            <h1>Investor Portal</h1>
+            <p>Confidential documents and resources for investors and partners</p>
+        </section>
+
+        <section class="documents-grid">
+            <div class="document-card">
+                <div class="document-header">
+                    <div class="document-icon">
+                        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="5" width="40" height="50" rx="4" fill="#667eea"/>
+                            <rect x="16" y="12" width="28" height="3" rx="1.5" fill="white" opacity="0.9"/>
+                            <rect x="16" y="18" width="28" height="2" rx="1" fill="white" opacity="0.6"/>
+                            <rect x="16" y="23" width="22" height="2" rx="1" fill="white" opacity="0.6"/>
+                            <rect x="16" y="28" width="28" height="2" rx="1" fill="white" opacity="0.6"/>
+                            <rect x="16" y="33" width="18" height="2" rx="1" fill="white" opacity="0.6"/>
+                            <rect x="16" y="38" width="25" height="2" rx="1" fill="white" opacity="0.6"/>
+                            <rect x="16" y="43" width="20" height="2" rx="1" fill="white" opacity="0.6"/>
+                        </svg>
+                    </div>
+                    <div class="document-info">
+                        <h3>Zettai White Paper</h3>
+                        <span class="meta">Technical Documentation</span>
+                    </div>
+                </div>
+                <p class="document-description">
+                    Comprehensive technical deep-dive into Zettai's revolutionary architecture. Covers CXL memory fabric design,
+                    disaggregated computing principles, FPGA acceleration strategies, and our vision for next-generation AI infrastructure.
+                </p>
+                <div class="document-actions">
+                    <a href="../Zettai_White_Paper.pdf" class="btn btn-primary" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download PDF
+                    </a>
+                    <button class="btn btn-secondary" onclick="showViewer('whitepaper')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        View Online
+                    </button>
+                </div>
+            </div>
+
+            <div class="document-card">
+                <div class="document-header">
+                    <div class="document-icon">
+                        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="10" width="50" height="35" rx="4" fill="#ff6b9d"/>
+                            <rect x="10" y="15" width="40" height="25" rx="2" fill="white"/>
+                            <rect x="14" y="19" width="15" height="8" rx="2" fill="#667eea"/>
+                            <rect x="14" y="30" width="32" height="2" rx="1" fill="#ddd"/>
+                            <rect x="14" y="35" width="25" height="2" rx="1" fill="#ddd"/>
+                            <polygon points="30,52 25,45 35,45" fill="#ff6b9d"/>
+                        </svg>
+                    </div>
+                    <div class="document-info">
+                        <h3>ZettEngine Pitch Deck</h3>
+                        <span class="meta">Investor Presentation</span>
+                    </div>
+                </div>
+                <p class="document-description">
+                    Executive overview of ZettEngine's market positioning, competitive advantages, and business opportunity.
+                    Includes performance benchmarks, cost analysis, and roadmap for the AI infrastructure revolution.
+                </p>
+                <div class="document-actions">
+                    <a href="../ZettEngine_CXL_PitchDeck_v1.pdf" class="btn btn-primary" target="_blank">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download PDF
+                    </a>
+                    <button class="btn btn-secondary" onclick="showViewer('pitchdeck')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        View Online
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="pdf-viewer" id="viewer-section">
+            <h2>Document Viewer</h2>
+            <div class="viewer-tabs">
+                <button class="tab-btn active" onclick="showViewer('whitepaper')">White Paper</button>
+                <button class="tab-btn" onclick="showViewer('pitchdeck')">Pitch Deck</button>
+            </div>
+            <div class="viewer-container">
+                <iframe id="whitepaper-frame" class="pdf-frame active" src="../Zettai_White_Paper.pdf" title="Zettai White Paper"></iframe>
+                <iframe id="pitchdeck-frame" class="pdf-frame" src="../ZettEngine_CXL_PitchDeck_v1.pdf" title="ZettEngine Pitch Deck"></iframe>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Confidential - For authorized investors and partners only</p>
+            <p style="margin-top: 10px;">&copy; 2025 zett.ai Absolute Technology</p>
+        </div>
+    </footer>
+
+    <script>
+        function showViewer(doc) {
+            // Update tabs
+            document.querySelectorAll('.tab-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+
+            // Update frames
+            document.querySelectorAll('.pdf-frame').forEach(function(frame) {
+                frame.classList.remove('active');
+            });
+
+            if (doc === 'whitepaper') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('whitepaper-frame').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('pitchdeck-frame').classList.add('active');
+            }
+
+            // Scroll to viewer
+            document.getElementById('viewer-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
