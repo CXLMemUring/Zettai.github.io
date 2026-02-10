@@ -1,428 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Investor Portal - zett.ai</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #fff;
-            min-height: 100vh;
-        }
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Merriweather:ital,wght@0,300;0,700;0,900;1,300&display=swap" rel="stylesheet">
 
-        header {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-container span {
-            font-size: 1.5em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .back-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .back-link:hover {
-            color: #764ba2;
-        }
-
-        .hero {
-            padding: 60px 0 40px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.1em;
-        }
-
-        .badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .documents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            padding: 40px 0;
-        }
-
-        .document-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .document-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-
-        .document-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .document-icon {
-            flex-shrink: 0;
-        }
-
-        .document-info h3 {
-            font-size: 1.4em;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-
-        .document-info .meta {
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .document-description {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .document-actions {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 12px 28px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .pdf-viewer {
-            margin-top: 60px;
-            padding: 40px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .pdf-viewer h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .viewer-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .tab-btn:hover, .tab-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: transparent;
-        }
-
-        .viewer-container {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
-            height: 700px;
-        }
-
-        .viewer-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .pdf-frame {
-            display: none;
-        }
-
-        .pdf-frame.active {
-            display: block;
-        }
-
-        footer {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 30px 0;
-            margin-top: 60px;
-            text-align: center;
-        }
-
-        footer p {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9em;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 0 15px;
-            }
-
-            header {
-                padding: 15px 0;
-            }
-
-            nav {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .logo-container span {
-                font-size: 1.2em;
-            }
-
-            .back-link {
-                font-size: 0.9em;
-            }
-
-            .hero {
-                padding: 40px 0 25px;
-            }
-
-            .hero h1 {
-                font-size: 1.6em;
-            }
-
-            .hero p {
-                font-size: 0.95em;
-            }
-
-            .badge {
-                font-size: 0.75em;
-                padding: 4px 12px;
-            }
-
-            .documents-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-                padding: 25px 0;
-            }
-
-            .document-card {
-                padding: 20px;
-                border-radius: 15px;
-            }
-
-            .document-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
-            }
-
-            .document-icon svg {
-                width: 50px;
-                height: 50px;
-            }
-
-            .document-info h3 {
-                font-size: 1.2em;
-            }
-
-            .document-description {
-                font-size: 0.9em;
-                margin-bottom: 20px;
-            }
-
-            .document-actions {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .btn {
-                justify-content: center;
-                padding: 10px 20px;
-                font-size: 0.9em;
-            }
-
-            .pdf-viewer {
-                margin-top: 40px;
-                padding: 25px 0;
-            }
-
-            .pdf-viewer h2 {
-                font-size: 1.3em;
-                margin-bottom: 20px;
-            }
-
-            .viewer-container {
-                height: 450px;
-                border-radius: 10px;
-            }
-
-            .viewer-tabs {
-                flex-direction: row;
-                gap: 8px;
-            }
-
-            .tab-btn {
-                padding: 8px 16px;
-                font-size: 0.85em;
-                flex: 1;
-            }
-
-            footer {
-                margin-top: 40px;
-                padding: 20px 0;
-            }
-
-            footer p {
-                font-size: 0.8em;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                        accent: {
+                            blue: '#667eea',
+                            purple: '#764ba2',
+                            pink: '#ff6b9d',
+                        }
+                    }
+                }
             }
         }
-
-        @media (max-width: 380px) {
-            .hero h1 {
-                font-size: 1.4em;
-            }
-
-            .document-info h3 {
-                font-size: 1.1em;
-            }
-
-            .viewer-container {
-                height: 350px;
-            }
-
-            .tab-btn {
-                padding: 6px 10px;
-                font-size: 0.75em;
-            }
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <header>
-        <nav class="container">
-            <div class="logo-container">
-                <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="50" cy="50" r="35" fill="url(#logoGrad)"/>
-                    <circle cx="38" cy="45" r="3" fill="white"/>
-                    <circle cx="62" cy="45" r="3" fill="white"/>
-                    <path d="M 35 55 Q 50 65 65 55" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
-                </svg>
-                <span>zett.ai Portal</span>
+<body class="bg-slate-900 text-white font-sans antialiased min-h-screen selection:bg-brand-100 selection:text-brand-900">
+
+    <!-- Header -->
+    <nav class="fixed w-full bg-slate-900/90 backdrop-blur-sm border-b border-white/10 z-50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="35" fill="url(#logoGrad)"/>
+                        <circle cx="38" cy="45" r="3" fill="white"/>
+                        <circle cx="62" cy="45" r="3" fill="white"/>
+                        <path d="M 35 55 Q 50 65 65 55" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    <span class="font-mono font-bold text-xl tracking-tight text-brand-400">zett.ai Portal</span>
+                </div>
+                <a href="../" class="text-sm font-medium text-brand-400 hover:text-brand-200 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back to Main Site
+                </a>
             </div>
-            <a href="../" class="back-link">Back to Main Site</a>
-        </nav>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="relative pt-32 pb-12 lg:pt-40 lg:pb-16 overflow-hidden">
+        <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+            <div class="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-brand-600 opacity-15 blur-[100px]"></div>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-600/20 border border-brand-500/30 text-brand-300 text-xs font-mono font-medium mb-6">
+                Insider Access
+            </div>
+            <h1 class="text-3xl md:text-5xl font-serif font-bold text-white tracking-tight mb-4">
+                Investor Portal
+            </h1>
+            <p class="text-lg text-slate-400 font-light max-w-2xl mx-auto">
+                Confidential documents and resources for investors and partners
+            </p>
+        </div>
     </header>
 
-    <main class="container">
-        <section class="hero">
-            <span class="badge">Insider Access</span>
-            <h1>Investor Portal</h1>
-            <p>Confidential documents and resources for investors and partners</p>
-        </section>
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
 
-        <section class="documents-grid">
-            <div class="document-card">
-                <div class="document-header">
-                    <div class="document-icon">
-                        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <!-- Document Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+            <!-- White Paper Card -->
+            <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/10 transition-all">
+                <div class="flex items-start gap-4 mb-5">
+                    <div class="flex-shrink-0">
+                        <svg width="50" height="50" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
                             <rect x="10" y="5" width="40" height="50" rx="4" fill="#667eea"/>
                             <rect x="16" y="12" width="28" height="3" rx="1.5" fill="white" opacity="0.9"/>
                             <rect x="16" y="18" width="28" height="2" rx="1" fill="white" opacity="0.6"/>
@@ -433,38 +117,32 @@
                             <rect x="16" y="43" width="20" height="2" rx="1" fill="white" opacity="0.6"/>
                         </svg>
                     </div>
-                    <div class="document-info">
-                        <h3>Zettai White Paper</h3>
-                        <span class="meta">Technical Documentation</span>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-1">Zettai White Paper</h3>
+                        <span class="text-xs text-slate-500 font-mono">Technical Documentation</span>
                     </div>
                 </div>
-                <p class="document-description">
+                <p class="text-sm text-slate-400 leading-relaxed mb-6">
                     Comprehensive technical deep-dive into Zettai's revolutionary architecture. Covers CXL memory fabric design,
                     disaggregated computing principles, FPGA acceleration strategies, and our vision for next-generation AI infrastructure.
                 </p>
-                <div class="document-actions">
-                    <a href="../Zettai_White_Paper.pdf" class="btn btn-primary" target="_blank">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
+                <div class="flex flex-wrap gap-3">
+                    <a href="../Zettai_White_Paper.pdf" class="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md text-sm transition-colors" target="_blank">
+                        <i data-lucide="download" class="w-4 h-4"></i>
                         Download PDF
                     </a>
-                    <button class="btn btn-secondary" onclick="showViewer('whitepaper')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
+                    <button class="tab-trigger inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 text-white border border-white/20 font-medium rounded-md text-sm transition-colors" onclick="showViewer('whitepaper')">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
                         View Online
                     </button>
                 </div>
             </div>
 
-            <div class="document-card">
-                <div class="document-header">
-                    <div class="document-icon">
-                        <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <!-- Pitch Deck Card -->
+            <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/10 transition-all">
+                <div class="flex items-start gap-4 mb-5">
+                    <div class="flex-shrink-0">
+                        <svg width="50" height="50" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
                             <rect x="5" y="10" width="50" height="35" rx="4" fill="#ff6b9d"/>
                             <rect x="10" y="15" width="40" height="25" rx="2" fill="white"/>
                             <rect x="14" y="19" width="15" height="8" rx="2" fill="#667eea"/>
@@ -473,73 +151,77 @@
                             <polygon points="30,52 25,45 35,45" fill="#ff6b9d"/>
                         </svg>
                     </div>
-                    <div class="document-info">
-                        <h3>ZettEngine Pitch Deck</h3>
-                        <span class="meta">Investor Presentation</span>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-1">ZettEngine Pitch Deck</h3>
+                        <span class="text-xs text-slate-500 font-mono">Investor Presentation</span>
                     </div>
                 </div>
-                <p class="document-description">
+                <p class="text-sm text-slate-400 leading-relaxed mb-6">
                     Executive overview of ZettEngine's market positioning, competitive advantages, and business opportunity.
                     Includes performance benchmarks, cost analysis, and roadmap for the AI infrastructure revolution.
                 </p>
-                <div class="document-actions">
-                    <a href="../ZettEngine_CXL_PitchDeck_v1.pdf" class="btn btn-primary" target="_blank">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
+                <div class="flex flex-wrap gap-3">
+                    <a href="../ZettEngine_CXL_PitchDeck_v1.pdf" class="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md text-sm transition-colors" target="_blank">
+                        <i data-lucide="download" class="w-4 h-4"></i>
                         Download PDF
                     </a>
-                    <button class="btn btn-secondary" onclick="showViewer('pitchdeck')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
+                    <button class="tab-trigger inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 text-white border border-white/20 font-medium rounded-md text-sm transition-colors" onclick="showViewer('pitchdeck')">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
                         View Online
                     </button>
                 </div>
             </div>
         </section>
 
-        <section class="pdf-viewer" id="viewer-section">
-            <h2>Document Viewer</h2>
-            <div class="viewer-tabs">
-                <button class="tab-btn active" onclick="showViewer('whitepaper')">White Paper</button>
-                <button class="tab-btn" onclick="showViewer('pitchdeck')">Pitch Deck</button>
+        <!-- PDF Viewer -->
+        <section id="viewer-section" class="border-t border-white/10 pt-12">
+            <h2 class="text-xl font-serif font-bold text-white text-center mb-6">Document Viewer</h2>
+            <div class="flex justify-center gap-3 mb-6">
+                <button class="tab-btn active px-5 py-2 rounded-md text-sm font-medium transition-all bg-brand-600 text-white" onclick="showViewer('whitepaper')">White Paper</button>
+                <button class="tab-btn px-5 py-2 rounded-md text-sm font-medium transition-all bg-white/10 text-white border border-white/20 hover:bg-white/15" onclick="showViewer('pitchdeck')">Pitch Deck</button>
             </div>
-            <div class="viewer-container">
-                <iframe id="whitepaper-frame" class="pdf-frame active" src="../Zettai_White_Paper.pdf" title="Zettai White Paper"></iframe>
-                <iframe id="pitchdeck-frame" class="pdf-frame" src="../ZettEngine_CXL_PitchDeck_v1.pdf" title="ZettEngine Pitch Deck"></iframe>
+            <div class="bg-white/[0.02] border border-white/10 rounded-lg overflow-hidden h-[700px] max-sm:h-[450px]">
+                <iframe id="whitepaper-frame" class="pdf-frame w-full h-full border-none" src="../Zettai_White_Paper.pdf" title="Zettai White Paper"></iframe>
+                <iframe id="pitchdeck-frame" class="pdf-frame w-full h-full border-none hidden" src="../ZettEngine_CXL_PitchDeck_v1.pdf" title="ZettEngine Pitch Deck"></iframe>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>Confidential - For authorized investors and partners only</p>
-            <p style="margin-top: 10px;">&copy; 2025 zett.ai Absolute Technology</p>
+    <!-- Footer -->
+    <footer class="bg-black/20 border-t border-white/10 py-8 mt-16">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
+            <p class="text-sm text-slate-500">Confidential - For authorized investors and partners only</p>
+            <p class="text-xs text-slate-600 font-mono">&copy; 2025 zett.ai Absolute Technology</p>
         </div>
     </footer>
 
+    <!-- Init Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- Viewer Logic -->
     <script>
         function showViewer(doc) {
             // Update tabs
             document.querySelectorAll('.tab-btn').forEach(function(btn) {
-                btn.classList.remove('active');
+                btn.classList.remove('active', 'bg-brand-600');
+                btn.classList.add('bg-white/10', 'border', 'border-white/20');
             });
 
             // Update frames
             document.querySelectorAll('.pdf-frame').forEach(function(frame) {
-                frame.classList.remove('active');
+                frame.classList.add('hidden');
             });
 
             if (doc === 'whitepaper') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('whitepaper-frame').classList.add('active');
+                document.querySelectorAll('.tab-btn')[0].classList.add('active', 'bg-brand-600');
+                document.querySelectorAll('.tab-btn')[0].classList.remove('bg-white/10', 'border', 'border-white/20');
+                document.getElementById('whitepaper-frame').classList.remove('hidden');
             } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('pitchdeck-frame').classList.add('active');
+                document.querySelectorAll('.tab-btn')[1].classList.add('active', 'bg-brand-600');
+                document.querySelectorAll('.tab-btn')[1].classList.remove('bg-white/10', 'border', 'border-white/20');
+                document.getElementById('pitchdeck-frame').classList.remove('hidden');
             }
 
             // Scroll to viewer
