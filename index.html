@@ -21,8 +21,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Merriweather:ital,wght@0,300;0,700;0,900;1,300&display=swap" rel="stylesheet">
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <script>
         tailwind.config = {
@@ -96,7 +96,7 @@
                 <div class="flex items-center md:hidden">
                     <button id="mobile-menu-btn" type="button" class="text-slate-500 hover:text-slate-800 focus:outline-none p-2" aria-controls="mobile-menu" aria-expanded="false">
                         <span class="sr-only">Open main menu</span>
-                        <i data-lucide="menu" class="w-6 h-6"></i>
+                        <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
@@ -160,15 +160,15 @@
 
             <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 text-slate-700 font-mono text-sm border-t border-b border-slate-100 py-6 bg-white/50 backdrop-blur-sm">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="zap" class="w-5 h-5 text-brand-600"></i>
+                    <i class="fas fa-bolt text-lg text-brand-600"></i>
                     <span>10x Cheaper Inference</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i data-lucide="cpu" class="w-5 h-5 text-brand-600"></i>
+                    <i class="fas fa-microchip text-lg text-brand-600"></i>
                     <span>CXL 3.0 + FPGA</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i data-lucide="battery-charging" class="w-5 h-5 text-brand-600"></i>
+                    <i class="fas fa-charging-station text-lg text-brand-600"></i>
                     <span>5x Energy Efficient</span>
                 </div>
             </div>
@@ -242,11 +242,11 @@
                         <div class="config-panel active bg-slate-50 border border-slate-200 rounded-lg p-5" data-config-panel="standard">
                             <h4 class="font-bold text-slate-900 mb-3">Standard Build (ZettEngine)</h4>
                             <ul class="space-y-1.5 text-sm text-slate-600 mb-4">
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>AREOD motherboard</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>AMD Ryzen Threadripper PRO 9960X</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>SMART CXL 512 GB memory fabric</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>NVIDIA GeForce RTX 5090</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>Technical support</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>AREOD motherboard</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>AMD Ryzen Threadripper PRO 9960X</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>SMART CXL 512 GB memory fabric</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>NVIDIA GeForce RTX 5090</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>Technical support</li>
                             </ul>
                             <div class="flex items-center justify-between flex-wrap gap-3">
                                 <div>
@@ -265,9 +265,9 @@
                         <div class="config-panel hidden bg-slate-50 border border-slate-200 rounded-lg p-5" data-config-panel="pro">
                             <h4 class="font-bold text-slate-900 mb-3">Pro Build (ZettEngine Pro)</h4>
                             <ul class="space-y-1.5 text-sm text-slate-600 mb-4">
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>Intel Xeon 6787P</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>SMART CXL 512 GB memory fabric</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>Technical support</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>Intel Xeon 6787P</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>SMART CXL 512 GB memory fabric</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>Technical support</li>
                             </ul>
                             <div class="flex items-center justify-between flex-wrap gap-3">
                                 <div>
@@ -286,11 +286,11 @@
                         <div class="config-panel hidden bg-slate-50 border border-slate-200 rounded-lg p-5" data-config-panel="pro-max">
                             <h4 class="font-bold text-slate-900 mb-3">Ultimate Build (ZettEngine Pro Max)</h4>
                             <ul class="space-y-1.5 text-sm text-slate-600 mb-4">
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>Intel Xeon 6787P</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>NVIDIA GeForce RTX 5090</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>SMART CXL 512 GB memory fabric</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>Altera FPGA acceleration module</li>
-                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0"></i>Technical support</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>Intel Xeon 6787P</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>NVIDIA GeForce RTX 5090</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>SMART CXL 512 GB memory fabric</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>Altera FPGA acceleration module</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5 flex-shrink-0"></i>Technical support</li>
                             </ul>
                             <div class="flex items-center justify-between flex-wrap gap-3">
                                 <div>
@@ -333,7 +333,7 @@
                         <span class="bg-slate-100 text-slate-700 text-xs font-mono font-medium px-2.5 py-1 rounded">Real-time</span>
                     </div>
                     <a href="https://github.com/CXLMemUring/CXLOS" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800 transition-colors">
-                        <i data-lucide="github" class="w-4 h-4"></i>
+                        <i class="fab fa-github"></i>
                         View ZettOS on GitHub ↗
                     </a>
                 </div>
@@ -368,7 +368,7 @@
                         <span class="bg-slate-100 text-slate-700 text-xs font-mono font-medium px-2.5 py-1 rounded">Silicon</span>
                     </div>
                     <a href="https://zett-ai.myshopify.com/products/cxl2-0-pcie-bridge?variant=50860191252768" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800 transition-colors">
-                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <i class="fas fa-shopping-cart"></i>
                         Buy CXL 2.0 PCIe Bridge on Shopify ↗
                     </a>
                 </div>
@@ -381,7 +381,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 text-center">
                     <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-brand-100 flex items-center justify-center">
-                        <i data-lucide="rocket" class="w-6 h-6 text-brand-600"></i>
+                        <i class="fas fa-rocket text-2xl text-brand-600"></i>
                     </div>
                     <h4 class="font-bold text-slate-900 mb-2">10x Cheaper</h4>
                     <p class="text-sm text-slate-600">Dramatically lower inference costs through heterogeneous acceleration.</p>
@@ -389,7 +389,7 @@
 
                 <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 text-center">
                     <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <i data-lucide="battery-charging" class="w-6 h-6 text-emerald-600"></i>
+                        <i class="fas fa-charging-station text-2xl text-emerald-600"></i>
                     </div>
                     <h4 class="font-bold text-slate-900 mb-2">5x Energy Efficient</h4>
                     <p class="text-sm text-slate-600">Significant power savings through disaggregated architecture and optimized workload placement.</p>
@@ -397,7 +397,7 @@
 
                 <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 text-center">
                     <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-pink-100 flex items-center justify-center">
-                        <i data-lucide="gauge" class="w-6 h-6 text-pink-600"></i>
+                        <i class="fas fa-tachometer-alt text-2xl text-pink-600"></i>
                     </div>
                     <h4 class="font-bold text-slate-900 mb-2">95% Utilization</h4>
                     <p class="text-sm text-slate-600">Maximize resource efficiency with intelligent scheduling across all compute elements.</p>
@@ -405,7 +405,7 @@
 
                 <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 text-center">
                     <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-amber-100 flex items-center justify-center">
-                        <i data-lucide="target" class="w-6 h-6 text-amber-600"></i>
+                        <i class="fas fa-bullseye text-2xl text-amber-600"></i>
                     </div>
                     <h4 class="font-bold text-slate-900 mb-2">CXL-FPGA Direct</h4>
                     <p class="text-sm text-slate-600">Zero-overhead GPU-to-FPGA communication via CXL memory fabric.</p>
@@ -482,7 +482,7 @@
                 <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
-                            <i data-lucide="file-text" class="w-5 h-5 text-brand-600"></i>
+                            <i class="fas fa-file-alt text-xl text-brand-600"></i>
                         </div>
                         <h3 class="font-bold text-slate-900">White Paper</h3>
                     </div>
@@ -490,7 +490,7 @@
                         Deep dive into Zettai's technology architecture, CXL memory fabric innovations, and our vision for disaggregated AI infrastructure.
                     </p>
                     <a href="Zettai_White_Paper.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800 transition-colors">
-                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <i class="fas fa-download"></i>
                         Download White Paper (PDF)
                     </a>
                 </div>
@@ -498,7 +498,7 @@
                 <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0">
-                            <i data-lucide="presentation" class="w-5 h-5 text-pink-600"></i>
+                            <i class="fas fa-presentation text-xl text-pink-600"></i>
                         </div>
                         <h3 class="font-bold text-slate-900">Pitch Deck</h3>
                     </div>
@@ -506,7 +506,7 @@
                         Overview of ZettEngine capabilities, market opportunity, and competitive advantages in the AI infrastructure space.
                     </p>
                     <a href="ZettEngine_CXL_PitchDeck_v1.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800 transition-colors">
-                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <i class="fas fa-download"></i>
                         View Pitch Deck (PDF)
                     </a>
                 </div>
@@ -527,7 +527,7 @@
             <p class="text-sm text-slate-500">Pioneering AI Infrastructure Since 2025</p>
             <div class="flex justify-center items-center gap-4">
                 <a href="mailto:vickie@zettai.us" class="inline-flex items-center gap-1.5 text-sm font-mono text-brand-600 hover:underline">
-                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    <i class="fas fa-envelope"></i>
                     vickie@zettai.us
                 </a>
             </div>
@@ -536,11 +536,6 @@
             </p>
         </div>
     </footer>
-
-    <!-- Init Lucide Icons -->
-    <script>
-        lucide.createIcons();
-    </script>
 
     <!-- Mobile Menu Logic -->
     <script>
@@ -598,9 +593,6 @@
                         panel.classList.remove('active');
                     }
                 });
-
-                // Re-init lucide icons for newly shown panels
-                lucide.createIcons();
             });
         });
     </script>
