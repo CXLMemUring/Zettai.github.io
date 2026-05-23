@@ -85,9 +85,6 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-7 text-sm font-medium">
                     <a href="#products" class="text-slate-600 hover:text-brand-700 transition-colors" data-i18n="nav.products">Products</a>
-                    <a href="#technology" class="text-slate-600 hover:text-brand-700 transition-colors" data-i18n="nav.architecture">Architecture</a>
-                    <a href="#features" class="text-slate-600 hover:text-brand-700 transition-colors" data-i18n="nav.capabilities">Capabilities</a>
-                    <a href="#resources" class="text-slate-600 hover:text-brand-700 transition-colors" data-i18n="nav.resources">Resources</a>
                     <a href="lease/" class="text-slate-600 hover:text-brand-700 transition-colors" data-i18n="nav.lease">Leasing</a>
                     <a href="forum/" class="text-slate-600 hover:text-brand-700 transition-colors" data-i18n="nav.forum">Forum</a>
                     <a href="portal/" class="text-slate-600 hover:text-brand-700 transition-colors" data-i18n="nav.portal">Investor Portal</a>
@@ -109,9 +106,6 @@
         <div class="hidden md:hidden border-t border-slate-100 bg-white" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 shadow-lg">
                 <a href="#products" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-brand-700 hover:bg-slate-50" data-i18n="nav.products">Products</a>
-                <a href="#technology" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-brand-700 hover:bg-slate-50" data-i18n="nav.architecture">Architecture</a>
-                <a href="#features" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-brand-700 hover:bg-slate-50" data-i18n="nav.capabilities">Capabilities</a>
-                <a href="#resources" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-brand-700 hover:bg-slate-50" data-i18n="nav.resources">Resources</a>
                 <a href="lease/" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-brand-700 hover:bg-slate-50" data-i18n="nav.lease">Leasing</a>
                 <a href="forum/" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-brand-700 hover:bg-slate-50" data-i18n="nav.forum">Forum</a>
                 <a href="portal/" class="mobile-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-brand-700 hover:bg-slate-50" data-i18n="nav.portal">Investor Portal</a>
@@ -211,7 +205,7 @@
     </header>
 
     <!-- Main Content -->
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-0">
 
         <!-- Products Section -->
         <section id="products" class="space-y-10 mb-20">
@@ -623,7 +617,7 @@
         </section>
 
         <!-- Resources Section -->
-        <section id="resources" class="mb-20">
+        <section id="resources" class="mb-4">
             <h2 class="text-2xl font-serif font-bold text-slate-900 mb-8" data-i18n="resources.title">Resources & Documentation</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
@@ -666,7 +660,7 @@
                         <h3 class="font-bold text-slate-900" data-i18n="resources.forumTitle">Community Forum</h3>
                     </div>
                     <p class="text-sm text-slate-600 mb-4 leading-relaxed" data-i18n="resources.forumDesc">
-                        Public discussion board for architecture questions, product feedback, support topics, demos, proposals, and announcements, backed by GitHub Issues.
+                        Public discussion board for architecture questions, product feedback, support topics, demos, proposals, and announcements.
                     </p>
                     <a href="forum/" class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-800 transition-colors">
                         <i data-lucide="message-square-plus" class="w-4 h-4"></i>
@@ -710,8 +704,8 @@
     </div>
 
     <!-- Footer -->
-    <footer id="contact" class="bg-slate-50 border-t border-slate-200 py-12 mt-12">
-        <div class="max-w-6xl mx-auto px-4 text-center space-y-4">
+    <footer id="contact" class="bg-slate-50 border-t border-slate-200 py-5">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
             <h3 class="font-serif font-bold text-slate-900 text-lg" data-i18n="footer.title">Let's Build the Future Together</h3>
             <p class="text-sm text-slate-500" data-i18n="footer.subtitle">Pioneering AI Infrastructure Since 2025</p>
             <div class="flex justify-center items-center gap-4">
@@ -720,7 +714,7 @@
                     vickie@zettai.us
                 </a>
             </div>
-            <p class="text-xs text-slate-400 pt-4 border-t border-slate-200 font-mono">
+            <p class="text-xs text-slate-400 pt-2 border-t border-slate-200 font-mono">
                 &copy; 2026 zett.ai Absolute Technology
             </p>
         </div>
@@ -861,7 +855,7 @@
                         cxlTitle: 'CXL + LPU Card Datasheet',
                         cxlDesc: 'Datasheet for the CXL/LPU accelerator card with PCIe Gen5 x16 + CXL, DDR4 RDIMM memory, M.2 storage, MCIO expansion, QSFP-DD networking, and BMC monitoring.',
                         forumTitle: 'Community Forum',
-                        forumDesc: 'Public discussion board for architecture questions, product feedback, support topics, demos, proposals, and announcements, backed by GitHub Issues.',
+                        forumDesc: 'Public discussion board for architecture questions, product feedback, support topics, demos, proposals, and announcements.',
                         leaseTitle: 'Lease Program',
                         leaseDesc: 'Evaluation and pilot leasing for tower kits, 2U1P/2U4P modules, CXL/LPU expansion, GPU systems, and 64-card cluster trials.',
                         portalTitle: 'Investor Portal',
@@ -1002,7 +996,7 @@
                         cxlTitle: 'CXL + LPU 卡数据表',
                         cxlDesc: '数据表覆盖 CXL/LPU 加速卡的 PCIe Gen5 x16 + CXL、DDR4 RDIMM 内存、M.2 存储、MCIO 扩展、QSFP-DD 网络和 BMC 监控。',
                         forumTitle: '社区论坛',
-                        forumDesc: '公开讨论区，用于架构问题、产品反馈、支持主题、演示、提案和公告，由 GitHub Issues 支撑。',
+                        forumDesc: '公开讨论区，用于架构问题、产品反馈、支持主题、演示、提案和公告。',
                         leaseTitle: '租赁方案',
                         leaseDesc: '面向塔式机箱、2U1P/2U4P 模块、CXL/LPU 扩展、GPU 系统和 64 卡试点的评估租赁方案。',
                         portalTitle: '投资人门户',

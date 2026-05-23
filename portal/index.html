@@ -142,8 +142,8 @@
     <!-- Header -->
     <nav class="glass-nav-dark fixed w-full z-50 transition-all duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center gap-3">
+            <div class="flex justify-between h-16 items-center gap-6">
+                <a href="../" class="flex-shrink-0 flex items-center gap-3" aria-label="zett.ai home">
                     <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -156,14 +156,16 @@
                         <circle cx="62" cy="45" r="3" fill="white"/>
                         <path d="M 35 55 Q 50 65 65 55" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
                     </svg>
-                    <span class="font-mono font-bold text-xl tracking-tight text-brand-400">zett.ai Portal</span>
+                    <span class="font-mono font-bold text-xl tracking-tight text-brand-400">zett.ai</span>
+                </a>
+                <div class="hidden items-center gap-7 text-sm font-medium md:flex">
+                    <a href="../#products" class="text-slate-300 transition-colors hover:text-brand-200" data-i18n="nav.products">Products</a>
+                    <a href="../lease/" class="text-slate-300 transition-colors hover:text-brand-200" data-i18n="nav.lease">Leasing</a>
+                    <a href="../forum/" class="text-slate-300 transition-colors hover:text-brand-200" data-i18n="nav.forum">Forum</a>
+                    <a href="./" class="text-brand-200 transition-colors hover:text-white" data-i18n="nav.portal">Investor Portal</a>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center">
                     <button type="button" class="lang-toggle glass-button-dark rounded-md px-3 py-1.5 text-sm font-medium text-brand-200 transition-colors hover:text-white" aria-label="Switch language">中文</button>
-                    <a href="../" class="text-sm font-medium text-brand-400 hover:text-brand-200 transition-colors flex items-center gap-1.5">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                        <span data-i18n="nav.back">Back to Main Site</span>
-                    </a>
                 </div>
             </div>
         </div>
@@ -349,7 +351,10 @@
             var translations = {
                 en: {
                     nav: {
-                        back: 'Back to Main Site'
+                        products: 'Products',
+                        lease: 'Leasing',
+                        forum: 'Forum',
+                        portal: 'Investor Portal'
                     },
                     hero: {
                         badge: 'Insider Access',
@@ -395,7 +400,10 @@
                 },
                 zh: {
                     nav: {
-                        back: '返回主页'
+                        products: '产品',
+                        lease: '租赁',
+                        forum: '论坛',
+                        portal: '投资人门户'
                     },
                     hero: {
                         badge: '授权访问',
