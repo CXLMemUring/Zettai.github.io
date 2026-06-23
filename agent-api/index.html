@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zettai Agent API - Sandlock RISC-V Runtime</title>
+    <meta name="description" content="Zettai Agent API sells metered tokens for RISC-V Sandlock agent sandboxes, tool execution, and secure network-bound credential proxying.">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Merriweather:ital,wght@0,700;0,900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eefdf9',
+                            100: '#d4f7f0',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            900: '#134e4a',
+                        },
+                        ink: {
+                            950: '#07111f',
+                            900: '#0f172a',
+                            800: '#172033',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-white font-sans antialiased selection:bg-brand-100 selection:text-brand-900">
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:44px_44px]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(20,184,166,.24),transparent_34%),radial-gradient(circle_at_80%_18%,rgba(99,102,241,.20),transparent_30%),linear-gradient(180deg,#020617_0%,#0f172a_55%,#020617_100%)]"></div>
+    </div>
+
+    <nav class="fixed top-0 z-50 w-full border-b border-white/10 bg-slate-950/72 backdrop-blur-xl">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <a href="../" class="flex items-center gap-3" aria-label="zett.ai home">
+                <span class="flex h-9 w-9 items-center justify-center rounded-md bg-brand-500 text-slate-950">
+                    <i data-lucide="terminal-square" class="h-5 w-5"></i>
+                </span>
+                <span class="font-mono text-xl font-bold tracking-tight text-white">zett.ai</span>
+            </a>
+            <div class="hidden items-center gap-7 text-sm font-medium md:flex">
+                <a href="../#products" class="text-slate-300 transition-colors hover:text-white">Platform</a>
+                <a href="./" class="text-brand-200">Agent API</a>
+                <a href="../lease/" class="text-slate-300 transition-colors hover:text-white">Leasing</a>
+                <a href="../portal/" class="text-slate-300 transition-colors hover:text-white">Portal</a>
+            </div>
+            <a href="#console" class="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-brand-100">
+                <i data-lucide="key-round" class="h-4 w-4"></i>
+                Get API token
+            </a>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-16 lg:pt-40">
+        <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8">
+            <section>
+                <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-400/30 bg-brand-500/10 px-3 py-1 text-xs font-mono font-bold uppercase tracking-wide text-brand-100">
+                    <span>Public preview</span>
+                    <span class="text-white/30">|</span>
+                    <span>Sandlock on RISC-V</span>
+                </div>
+                <h1 class="max-w-4xl text-4xl font-serif font-black tracking-tight text-white sm:text-6xl">
+                    Agent API tokens for secure RISC-V sandboxes.
+                </h1>
+                <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+                    Start isolated Linux sessions for coding agents, browser tasks, repo automation, and tool execution. Meter every run, sell prepaid token packs, and keep customer credentials outside the sandbox.
+                </p>
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <a href="#console" class="inline-flex items-center justify-center gap-2 rounded-md bg-brand-400 px-5 py-3 text-sm font-bold text-slate-950 transition-colors hover:bg-brand-300">
+                        <i data-lucide="rocket" class="h-4 w-4"></i>
+                        Launch console
+                    </a>
+                    <a href="#docs" class="inline-flex items-center justify-center gap-2 rounded-md border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white/10">
+                        <i data-lucide="book-open" class="h-4 w-4"></i>
+                        API quickstart
+                    </a>
+                </div>
+                <div class="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
+                    <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+                        <p class="font-mono text-2xl font-bold text-brand-200">RISC-V</p>
+                        <p class="mt-1 text-sm text-slate-400">native isolation and control plane</p>
+                    </div>
+                    <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+                        <p class="font-mono text-2xl font-bold text-brand-200">tokens</p>
+                        <p class="mt-1 text-sm text-slate-400">Stripe packs and API metering</p>
+                    </div>
+                    <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+                        <p class="font-mono text-2xl font-bold text-brand-200">agents</p>
+                        <p class="mt-1 text-sm text-slate-400">run commands, expose ports, resume</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="rounded-lg border border-white/10 bg-slate-900/80 p-5 shadow-2xl shadow-black/40">
+                <div class="mb-4 flex items-center justify-between">
+                    <div>
+                        <p class="font-mono text-xs font-bold uppercase tracking-wide text-brand-200">TypeScript</p>
+                        <h2 class="text-xl font-bold text-white">Create an agent session</h2>
+                    </div>
+                    <span class="rounded-md border border-white/10 bg-white/5 px-2 py-1 font-mono text-xs text-slate-300">v1</span>
+                </div>
+                <pre class="overflow-x-auto rounded-md bg-slate-950 p-4 text-sm leading-6 text-slate-200"><code>const run = await fetch("https://api.zett.ai/v1/agent/run", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${ZETTAI_API_TOKEN}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    image: "python:3.12-slim",
+    command: "python - <<'PY'\nprint(2**32)\nPY",
+    network: "openai",
+    timeout_seconds: 30
+  })
+});
+
+console.log(await run.json());</code></pre>
+                <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                    <div class="rounded-md border border-white/10 bg-white/5 p-3">
+                        <p class="text-sm font-semibold text-white">Credential proxy</p>
+                        <p class="mt-1 text-xs leading-5 text-slate-400">Provider keys are injected at the network boundary, not inside the guest process.</p>
+                    </div>
+                    <div class="rounded-md border border-white/10 bg-white/5 p-3">
+                        <p class="text-sm font-semibold text-white">Metered by token</p>
+                        <p class="mt-1 text-xs leading-5 text-slate-400">Every run records CPU seconds, egress policy, and token usage for Stripe-backed billing.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </header>
+
+    <main>
+        <section class="border-y border-white/10 bg-white/[0.03] py-14">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mb-8 max-w-3xl">
+                    <p class="font-mono text-sm font-bold uppercase tracking-wide text-brand-200">Runtime primitives</p>
+                    <h2 class="mt-2 text-3xl font-serif font-bold text-white">Everything an agent API needs.</h2>
+                </div>
+                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <article class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <i data-lucide="shield" class="mb-4 h-6 w-6 text-brand-200"></i>
+                        <h3 class="font-bold text-white">Sandlock isolation</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Run untrusted agent work in locked Linux sessions with host-side policy and audit trails.</p>
+                    </article>
+                    <article class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <i data-lucide="network" class="mb-4 h-6 w-6 text-brand-200"></i>
+                        <h3 class="font-bold text-white">Egress profiles</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Choose locked-down, OpenAI, coding-agent, data-science, or custom allow-list network profiles.</p>
+                    </article>
+                    <article class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <i data-lucide="container" class="mb-4 h-6 w-6 text-brand-200"></i>
+                        <h3 class="font-bold text-white">Any OCI image</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Launch from pinned Docker images and cache hot bases for low-latency agent startup.</p>
+                    </article>
+                    <article class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <i data-lucide="key" class="mb-4 h-6 w-6 text-brand-200"></i>
+                        <h3 class="font-bold text-white">Customer API tokens</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Issue revocable tokens per user, project, or customer, with metering tied to each request.</p>
+                    </article>
+                    <article class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <i data-lucide="credit-card" class="mb-4 h-6 w-6 text-brand-200"></i>
+                        <h3 class="font-bold text-white">Stripe token packs</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Sell starter, team, and enterprise packs while keeping usage accounting in Zettai.</p>
+                    </article>
+                    <article class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <i data-lucide="server" class="mb-4 h-6 w-6 text-brand-200"></i>
+                        <h3 class="font-bold text-white">RISC-V backend</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Deploy the control plane on Lanxin now; point the runtime executor to Sandlock as it lands.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="console" class="py-16">
+            <div class="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[.9fr_1.1fr] lg:px-8">
+                <div>
+                    <p class="font-mono text-sm font-bold uppercase tracking-wide text-brand-200">MVP console</p>
+                    <h2 class="mt-2 text-3xl font-serif font-bold text-white">Login, buy tokens, create keys.</h2>
+                    <p class="mt-3 text-sm leading-6 text-slate-400">
+                        The backend supports GitHub and Google OAuth when credentials are configured. During bring-up, dev login lets us test token issuance and Stripe wiring on Lanxin.
+                    </p>
+                </div>
+                <div class="rounded-lg border border-white/10 bg-white p-5 text-slate-900 shadow-2xl">
+                    <div class="mb-4 flex flex-wrap items-center gap-3">
+                        <button id="github-login" class="inline-flex items-center gap-2 rounded-md bg-slate-950 px-4 py-2 text-sm font-bold text-white">
+                            <i data-lucide="github" class="h-4 w-4"></i>
+                            GitHub
+                        </button>
+                        <button id="google-login" class="inline-flex items-center gap-2 rounded-md border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700">
+                            <i data-lucide="chrome" class="h-4 w-4"></i>
+                            Google
+                        </button>
+                        <button id="dev-login" class="inline-flex items-center gap-2 rounded-md border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-bold text-brand-800">
+                            <i data-lucide="flask-conical" class="h-4 w-4"></i>
+                            Dev login
+                        </button>
+                    </div>
+                    <div id="console-status" class="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">Checking backend...</div>
+                    <div id="account-panel" class="mt-5 hidden space-y-4">
+                        <div class="grid gap-3 sm:grid-cols-3">
+                            <div class="rounded-md border border-slate-200 p-3">
+                                <p class="text-xs font-semibold uppercase text-slate-500">User</p>
+                                <p id="account-user" class="mt-1 font-mono text-sm text-slate-900">-</p>
+                            </div>
+                            <div class="rounded-md border border-slate-200 p-3">
+                                <p class="text-xs font-semibold uppercase text-slate-500">Balance</p>
+                                <p id="account-balance" class="mt-1 font-mono text-sm text-slate-900">-</p>
+                            </div>
+                            <div class="rounded-md border border-slate-200 p-3">
+                                <p class="text-xs font-semibold uppercase text-slate-500">Usage</p>
+                                <p id="account-usage" class="mt-1 font-mono text-sm text-slate-900">-</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <button id="checkout-starter" class="rounded-md bg-slate-950 px-4 py-2 text-sm font-bold text-white">Buy starter pack</button>
+                            <button id="create-token" class="rounded-md border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700">Create API token</button>
+                            <button id="refresh-account" class="rounded-md border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700">Refresh</button>
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-sm font-bold text-slate-900">Latest API token</label>
+                            <textarea id="latest-token" readonly rows="2" class="w-full rounded-md border border-slate-200 bg-slate-50 p-3 font-mono text-xs text-slate-700" placeholder="Create a token to reveal it once."></textarea>
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-sm font-bold text-slate-900">Quick API call</label>
+                            <pre class="overflow-x-auto rounded-md bg-slate-950 p-3 text-xs leading-5 text-slate-100"><code id="curl-example">curl -H "Authorization: Bearer zt_..." https://api.zett.ai/v1/agent/run</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="docs" class="border-t border-white/10 py-16">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <p class="font-mono text-sm font-bold uppercase tracking-wide text-brand-200">Quickstart</p>
+                <div class="mt-5 grid gap-5 lg:grid-cols-3">
+                    <div class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <p class="font-mono text-sm text-brand-200">1. Buy tokens</p>
+                        <h3 class="mt-2 font-bold text-white">Stripe checkout</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Start with prepaid credits. Metering stays in Zettai so plans can evolve quickly.</p>
+                    </div>
+                    <div class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <p class="font-mono text-sm text-brand-200">2. Create key</p>
+                        <h3 class="mt-2 font-bold text-white">Project API token</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Generate a scoped token for agent runs. Store only the hash server-side.</p>
+                    </div>
+                    <div class="rounded-lg border border-white/10 bg-white/5 p-5">
+                        <p class="font-mono text-sm text-brand-200">3. Run agents</p>
+                        <h3 class="mt-2 font-bold text-white">POST /v1/agent/run</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-400">Submit image, command, network profile, and timeout. Sandlock executor can be swapped in behind this endpoint.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-white/10 py-8">
+        <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+            <p>© 2026 Zettai. Agent runtime infrastructure.</p>
+            <p class="font-mono">API preview · RISC-V Sandlock · Stripe metering</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE = window.ZETTAI_API_BASE || localStorage.getItem('zettai_api_base') || window.location.origin;
+        const statusEl = document.getElementById('console-status');
+        const panelEl = document.getElementById('account-panel');
+        const userEl = document.getElementById('account-user');
+        const balanceEl = document.getElementById('account-balance');
+        const usageEl = document.getElementById('account-usage');
+        const tokenEl = document.getElementById('latest-token');
+        const curlEl = document.getElementById('curl-example');
+
+        function setStatus(text, ok = false) {
+            statusEl.textContent = text;
+            statusEl.className = ok
+                ? 'rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800'
+                : 'rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600';
+        }
+
+        async function api(path, options = {}) {
+            const res = await fetch(API_BASE + path, {
+                credentials: 'include',
+                headers: {'Content-Type': 'application/json', ...(options.headers || {})},
+                ...options
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+            return data;
+        }
+
+        async function refresh() {
+            try {
+                const me = await api('/api/me');
+                panelEl.classList.remove('hidden');
+                userEl.textContent = `${me.user.provider}:${me.user.external_id}`;
+                balanceEl.textContent = `${me.user.token_balance} tokens`;
+                usageEl.textContent = `${me.usage.total_tokens_used} used`;
+                setStatus('Logged in. You can create API tokens and test checkout.', true);
+            } catch (err) {
+                panelEl.classList.add('hidden');
+                setStatus(`Not logged in. Backend: ${API_BASE}. ${err.message}`);
+            }
+        }
+
+        document.getElementById('github-login').addEventListener('click', () => {
+            window.location.href = API_BASE + '/auth/github/start';
+        });
+        document.getElementById('google-login').addEventListener('click', () => {
+            window.location.href = API_BASE + '/auth/google/start';
+        });
+        document.getElementById('dev-login').addEventListener('click', async () => {
+            await api('/api/dev-login', {method: 'POST', body: JSON.stringify({email: 'founder@zett.ai'})});
+            await refresh();
+        });
+        document.getElementById('refresh-account').addEventListener('click', refresh);
+        document.getElementById('checkout-starter').addEventListener('click', async () => {
+            const checkout = await api('/api/checkout', {method: 'POST', body: JSON.stringify({pack: 'starter'})});
+            if (checkout.url) window.location.href = checkout.url;
+            else setStatus(checkout.message || 'Checkout created in test mode.', true);
+        });
+        document.getElementById('create-token').addEventListener('click', async () => {
+            const created = await api('/api/tokens', {method: 'POST', body: JSON.stringify({name: 'default'})});
+            tokenEl.value = created.token;
+            curlEl.textContent = `curl -X POST ${API_BASE}/v1/agent/run \\\n  -H "Authorization: Bearer ${created.token}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"image":"python:3.12-slim","command":"python -c \\"print(2**32)\\"","network":"openai"}'`;
+            await refresh();
+        });
+
+        refresh();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
