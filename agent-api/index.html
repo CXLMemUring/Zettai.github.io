@@ -54,16 +54,20 @@
                 </span>
                 <span class="font-mono text-xl font-bold tracking-tight text-white">zett.ai</span>
             </a>
-            <div class="hidden items-center gap-7 text-sm font-medium md:flex">
-                <a href="../#products" class="text-slate-300 transition-colors hover:text-white">Platform</a>
-                <a href="./" class="text-brand-200">Agent API</a>
-                <a href="../lease/" class="text-slate-300 transition-colors hover:text-white">Leasing</a>
-                <a href="../portal/" class="text-slate-300 transition-colors hover:text-white">Portal</a>
+            <div class="hidden items-center gap-4 text-sm font-medium md:flex lg:gap-7">
+                <a href="../#products" class="text-slate-300 transition-colors hover:text-white" data-i18n="nav.platform">Platform</a>
+                <a href="./" class="text-brand-200" data-i18n="nav.agentApi">Agent API</a>
+                <a href="../lease/" class="text-slate-300 transition-colors hover:text-white" data-i18n="nav.lease">Leasing</a>
+                <a href="../portal/" class="text-slate-300 transition-colors hover:text-white" data-i18n="nav.portal">Portal</a>
+                <a href="https://shop.zettai.us/" class="text-slate-300 transition-colors hover:text-white" data-i18n="nav.shop">Shop</a>
             </div>
-            <a href="#console" class="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-brand-100">
-                <i data-lucide="key-round" class="h-4 w-4"></i>
-                Get API token
-            </a>
+            <div class="flex items-center gap-3">
+                <button type="button" class="lang-toggle rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-brand-400/40 hover:text-brand-200" aria-label="Switch language">中文</button>
+                <a href="#console" class="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-brand-100">
+                    <i data-lucide="key-round" class="h-4 w-4"></i>
+                    <span class="hidden sm:inline" data-i18n="nav.getToken">Get API token</span>
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -122,10 +126,9 @@
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
-    image: "python:3.12-slim",
-    command: "python - <<'PY'\nprint(2**32)\nPY",
-    network: "openai",
-    timeout_seconds: 30
+    command: "python3 - <<'PY'\nprint(2**32)\nPY",
+    network: "none",
+    timeout: 30
   })
 });
 
@@ -276,6 +279,73 @@ console.log(await run.json());</code></pre>
     </footer>
 
     <script>
+        (function() {
+            var translations = {
+                en: {
+                    nav: {
+                        platform: 'Platform',
+                        agentApi: 'Agent API',
+                        lease: 'Leasing',
+                        portal: 'Portal',
+                        shop: 'Shop',
+                        getToken: 'Get API token'
+                    }
+                },
+                zh: {
+                    nav: {
+                        platform: '平台',
+                        agentApi: '智能体 API',
+                        lease: '租赁',
+                        portal: '投资人门户',
+                        shop: '商店',
+                        getToken: '获取 API Token'
+                    }
+                }
+            };
+
+            function getValue(obj, path) {
+                return path.split('.').reduce(function(value, key) {
+                    return value && value[key];
+                }, obj);
+            }
+
+            function applyLanguage(lang) {
+                var normalized = lang === 'zh' ? 'zh' : 'en';
+                var dictionary = translations[normalized] || translations.en;
+                document.documentElement.lang = normalized === 'zh' ? 'zh-CN' : 'en';
+                document.title = normalized === 'zh'
+                    ? 'Zettai 智能体 API - Sandlock RISC-V Runtime'
+                    : 'Zettai Agent API - Sandlock RISC-V Runtime';
+
+                document.querySelectorAll('[data-i18n]').forEach(function(element) {
+                    var value = getValue(dictionary, element.getAttribute('data-i18n'));
+                    if (value) element.textContent = value;
+                });
+
+                document.querySelectorAll('.lang-toggle').forEach(function(button) {
+                    button.textContent = normalized === 'zh' ? 'EN' : '中文';
+                    button.setAttribute('aria-label', normalized === 'zh' ? 'Switch to English' : '切换到中文');
+                });
+
+                localStorage.setItem('zettai-language', normalized);
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var stored = localStorage.getItem('zettai-language');
+                var initial = stored || ((navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en');
+                applyLanguage(initial);
+
+                document.querySelectorAll('.lang-toggle').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        var next = document.documentElement.lang === 'zh-CN' ? 'en' : 'zh';
+                        applyLanguage(next);
+                    });
+                });
+            });
+        })();
+    </script>
+
+    <script>
         const API_BASE = window.ZETTAI_API_BASE || localStorage.getItem('zettai_api_base') || window.location.origin;
         const statusEl = document.getElementById('console-status');
         const panelEl = document.getElementById('account-panel');
@@ -336,7 +406,7 @@ console.log(await run.json());</code></pre>
         document.getElementById('create-token').addEventListener('click', async () => {
             const created = await api('/api/tokens', {method: 'POST', body: JSON.stringify({name: 'default'})});
             tokenEl.value = created.token;
-            curlEl.textContent = `curl -X POST ${API_BASE}/v1/agent/run \\\n  -H "Authorization: Bearer ${created.token}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"image":"python:3.12-slim","command":"python -c \\"print(2**32)\\"","network":"openai"}'`;
+            curlEl.textContent = `curl -X POST ${API_BASE}/v1/agent/run \\\n  -H "Authorization: Bearer ${created.token}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"command":"python3 -c \\"print(2**32)\\"","network":"none","timeout":30}'`;
             await refresh();
         });
 

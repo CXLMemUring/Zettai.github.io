@@ -12,7 +12,7 @@ This MVP adds a same-origin Agent API preview for `Zettai.github.io`.
 - GitHub and Google OAuth wiring points
 - Preview endpoint: `POST /v1/agent/run`
 
-The current executor returns a structured Sandlock preview response. Replace that section in `handle_agent_run()` with the real RISC-V Sandlock worker when the runtime is ready.
+The executor now calls a real `sandlock run` CLI when `ZETTAI_SANDLOCK_BIN` points to an executable binary. If the binary is missing, `/v1/agent/run` returns `executor_unavailable` and does not charge tokens.
 
 ## Local Run
 
@@ -23,6 +23,7 @@ ZETTAI_DB=/tmp/zettai_agent_api.sqlite3 \
 ZETTAI_PUBLIC_URL=http://127.0.0.1:8787 \
 ZETTAI_FRONTEND_URL=http://127.0.0.1:8787/agent-api/ \
 ZETTAI_DEV_LOGIN=1 \
+ZETTAI_SANDLOCK_BIN=/path/to/sandlock \
 python3 api/zettai_agent_api.py --host 127.0.0.1 --port 8787
 ```
 
@@ -47,6 +48,7 @@ ssh lanxin
 cd /mnt/probe_nvme0n1p4/hetgpu_tmp/zettaimvp/Zettai.github.io
 ZETTAI_PUBLIC_URL=http://172.16.80.19:8787 \
 ZETTAI_FRONTEND_URL=http://172.16.80.19:8787/agent-api/ \
+ZETTAI_SANDLOCK_BIN=/mnt/probe_nvme0n1p4/hetgpu_tmp/zettaimvp/bin/sandlock \
 ZETTAI_DEV_LOGIN=1 \
 scripts/run_agent_api_lanxin.sh
 ```
@@ -67,6 +69,23 @@ Then open:
 
 ```text
 http://127.0.0.1:8787/agent-api/
+```
+
+## Install Sandlock on Lanxin
+
+The Lanxin image currently has Rust available through `~/.cargo/bin` on some boots, but that path may not be exported. To build Sandlock without filling `/`, use the NVMe helper:
+
+```bash
+ssh lanxin
+cd /mnt/probe_nvme0n1p4/hetgpu_tmp/zettaimvp/Zettai.github.io
+scripts/install_sandlock_lanxin.sh
+```
+
+Then restart the API with:
+
+```bash
+export ZETTAI_SANDLOCK_BIN=/mnt/probe_nvme0n1p4/hetgpu_tmp/zettaimvp/bin/sandlock
+scripts/run_agent_api_lanxin.sh
 ```
 
 ## Stripe
@@ -124,5 +143,22 @@ TOKEN=$(curl -s -c jar -b jar -X POST http://127.0.0.1:8787/api/tokens \
 curl -X POST http://127.0.0.1:8787/v1/agent/run \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
-  -d '{"image":"python:3.12-slim","command":"python -c \"print(2**32)\"","network":"openai"}'
+  -d '{"command":"python3 -c \"print(2**32)\"","network":"none","timeout":30}'
 ```
+
+## Agent Run Request Schema
+
+Useful fields for `POST /v1/agent/run`:
+
+- `command`: string, executed as `/bin/sh -lc <command>`
+- `argv`: array of strings, used instead of `command`
+- `files`: object of relative path to text or `{ "encoding": "base64", "content": "..." }`
+- `timeout`: seconds, capped by `ZETTAI_SANDBOX_MAX_TIMEOUT`
+- `max_memory`: e.g. `"512M"`
+- `max_processes`: process limit
+- `network`: `none`, `openai`, `github`, or `all`
+- `net_allow`: explicit Sandlock network rules, e.g. `["api.openai.com:443"]`
+- `http_allow`: HTTP ACL rules, e.g. `["POST api.openai.com/v1/*"]`
+- `fs_readable` / `fs_writable`: extra paths, in addition to the service defaults
+
+The service adds a per-run writable workdir under `ZETTAI_SANDBOX_ROOT` and passes it to Sandlock as `--workdir`.

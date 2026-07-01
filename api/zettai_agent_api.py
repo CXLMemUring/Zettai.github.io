@@ -17,7 +17,9 @@ import json
 import mimetypes
 import os
 import secrets
+import shutil
 import sqlite3
+import subprocess
 import time
 import urllib.error
 import urllib.parse
@@ -50,6 +52,13 @@ def env_int(name: str, default: int) -> int:
         return default
 
 
+def env_list(name: str, default: list[str]) -> list[str]:
+    raw = os.getenv(name)
+    if raw is None or raw.strip() == "":
+        return list(default)
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 class Config:
     def __init__(self, host: str, port: int) -> None:
         self.host = host
@@ -71,12 +80,51 @@ class Config:
         self.stripe_price_starter = os.getenv("STRIPE_PRICE_STARTER", "")
         self.stripe_success_url = os.getenv("STRIPE_SUCCESS_URL", f"{self.frontend_url}?checkout=success")
         self.stripe_cancel_url = os.getenv("STRIPE_CANCEL_URL", f"{self.frontend_url}?checkout=cancel")
+        self.sandlock_bin = os.getenv("ZETTAI_SANDLOCK_BIN", "")
+        self.sandbox_root = Path(os.getenv("ZETTAI_SANDBOX_ROOT", str(self.db_path.parent / "sandboxes")))
+        self.sandbox_timeout = env_int("ZETTAI_SANDBOX_TIMEOUT", 30)
+        self.sandbox_max_timeout = env_int("ZETTAI_SANDBOX_MAX_TIMEOUT", 120)
+        self.sandbox_output_limit = env_int("ZETTAI_SANDBOX_OUTPUT_LIMIT", 128 * 1024)
+        self.sandbox_max_memory = os.getenv("ZETTAI_SANDBOX_MAX_MEMORY", "512M")
+        self.sandbox_max_processes = env_int("ZETTAI_SANDBOX_MAX_PROCESSES", 32)
+        self.sandbox_default_readable = env_list(
+            "ZETTAI_SANDBOX_READABLE",
+            ["/usr", "/lib", "/lib64", "/bin", "/etc", "/proc", "/dev"],
+        )
+        self.sandbox_allow_degraded = env_list(
+            "ZETTAI_SANDBOX_ALLOW_DEGRADED",
+            ["fs-ioctl-dev", "signal-scope", "abstract-unix-socket-scope"],
+        )
 
     def callback_url(self, provider: str) -> str:
         return f"{self.public_url}/auth/{provider}/callback"
 
 
 CFG: Config
+
+
+def sandlock_executable() -> str | None:
+    if CFG.sandlock_bin:
+        expanded = os.path.expanduser(CFG.sandlock_bin)
+        if os.path.isfile(expanded) and os.access(expanded, os.X_OK):
+            return expanded
+        found = shutil.which(CFG.sandlock_bin)
+        if found:
+            return found
+        return None
+    return shutil.which("sandlock")
+
+
+def executor_status() -> dict[str, Any]:
+    path = sandlock_executable()
+    return {
+        "mode": "sandlock-cli",
+        "available": bool(path),
+        "sandlock_bin": path or CFG.sandlock_bin or "sandlock",
+        "sandbox_root": str(CFG.sandbox_root),
+        "default_timeout": CFG.sandbox_timeout,
+        "default_max_memory": CFG.sandbox_max_memory,
+    }
 
 
 SCHEMA = (
@@ -233,6 +281,253 @@ def bearer_auth(handler: BaseHTTPRequestHandler) -> tuple[sqlite3.Row, sqlite3.R
         return user, token
 
 
+NETWORK_PRESETS = {
+    "none": [],
+    "default-deny": [],
+    "openai": ["api.openai.com:443"],
+    "github": ["github.com:443", "api.github.com:443"],
+    "all": ["*", "udp://*"],
+    "*": ["*", "udp://*"],
+}
+
+
+def list_of_strings(value: Any, name: str, max_items: int = 64) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        items = [value]
+    elif isinstance(value, list):
+        items = value
+    else:
+        raise ValueError(f"{name} must be a string or list of strings")
+    out: list[str] = []
+    for item in items[:max_items]:
+        if not isinstance(item, str):
+            raise ValueError(f"{name} must contain only strings")
+        item = item.strip()
+        if item:
+            out.append(item)
+    return out
+
+
+def safe_rel_path(value: str) -> Path:
+    rel = Path(value)
+    if rel.is_absolute() or ".." in rel.parts:
+        raise ValueError(f"unsafe file path: {value}")
+    if not str(rel):
+        raise ValueError("empty file path")
+    return rel
+
+
+def normalize_command(data: dict[str, Any]) -> list[str]:
+    command = data.get("argv", data.get("command"))
+    if isinstance(command, list):
+        argv = []
+        for item in command:
+            if not isinstance(item, str) or not item:
+                raise ValueError("command/argv list must contain non-empty strings")
+            argv.append(item)
+        if not argv:
+            raise ValueError("command/argv cannot be empty")
+        return argv
+    if isinstance(command, str) and command.strip():
+        return ["/bin/sh", "-c", command]
+    raise ValueError("missing command; pass command as a string or argv as a list")
+
+
+def bounded_timeout(data: dict[str, Any]) -> int:
+    raw = data.get("timeout", CFG.sandbox_timeout)
+    try:
+        timeout = int(raw)
+    except (TypeError, ValueError):
+        raise ValueError("timeout must be an integer number of seconds")
+    return max(1, min(timeout, CFG.sandbox_max_timeout))
+
+
+def decode_limited(raw: bytes) -> tuple[str, bool]:
+    limit = max(1024, CFG.sandbox_output_limit)
+    truncated = len(raw) > limit
+    chunk = raw[:limit]
+    text = chunk.decode("utf-8", errors="replace")
+    return text, truncated
+
+
+def write_request_files(run_dir: Path, data: dict[str, Any]) -> None:
+    files = data.get("files") or {}
+    if not isinstance(files, dict):
+        raise ValueError("files must be an object of relative path to content")
+    for rel_name, payload in files.items():
+        if not isinstance(rel_name, str):
+            raise ValueError("files keys must be paths")
+        rel = safe_rel_path(rel_name)
+        target = run_dir / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if isinstance(payload, str):
+            target.write_text(payload, encoding="utf-8")
+        elif isinstance(payload, dict):
+            content = payload.get("content", "")
+            encoding = payload.get("encoding", "utf-8")
+            if not isinstance(content, str):
+                raise ValueError(f"files[{rel_name}].content must be a string")
+            if encoding == "base64":
+                target.write_bytes(base64.b64decode(content))
+            elif encoding == "utf-8":
+                target.write_text(content, encoding="utf-8")
+            else:
+                raise ValueError(f"unsupported file encoding for {rel_name}: {encoding}")
+        else:
+            raise ValueError(f"files[{rel_name}] must be a string or object")
+
+
+def default_readable_paths(extra: list[str]) -> list[str]:
+    paths = []
+    seen = set()
+    for path in CFG.sandbox_default_readable + extra:
+        if path and path not in seen and os.path.exists(path):
+            seen.add(path)
+            paths.append(path)
+    return paths
+
+
+def network_rules(data: dict[str, Any]) -> list[str]:
+    explicit = list_of_strings(data.get("net_allow"), "net_allow")
+    if explicit:
+        return explicit
+    network = str(data.get("network", "default-deny")).strip().lower()
+    return list(NETWORK_PRESETS.get(network, []))
+
+
+def build_sandlock_args(data: dict[str, Any], run_id: str, run_dir: Path, sandlock_bin: str) -> tuple[list[str], int]:
+    argv = normalize_command(data)
+    timeout = bounded_timeout(data)
+    fs_readable = default_readable_paths(list_of_strings(data.get("fs_readable"), "fs_readable"))
+    fs_writable = [str(run_dir)] + list_of_strings(data.get("fs_writable"), "fs_writable")
+    max_memory = str(data.get("max_memory") or CFG.sandbox_max_memory)
+    max_processes = int(data.get("max_processes") or CFG.sandbox_max_processes)
+
+    args = [sandlock_bin, "run", "--name", run_id, "-t", str(timeout)]
+    if max_memory:
+        args += ["-m", max_memory]
+    if max_processes > 0:
+        args += ["-P", str(max_processes)]
+    for protection in CFG.sandbox_allow_degraded:
+        args += ["--allow-degraded", protection]
+    for path in fs_readable:
+        args += ["-r", path]
+    for path in fs_writable:
+        args += ["-w", path]
+    args += ["--workdir", str(run_dir)]
+
+    if data.get("clean_env", True):
+        args.append("--clean-env")
+    env_vars = data.get("env") or {}
+    if not isinstance(env_vars, dict):
+        raise ValueError("env must be an object")
+    for key, val in env_vars.items():
+        if not isinstance(key, str) or not key or "=" in key:
+            raise ValueError("env keys must be non-empty strings without '='")
+        args += ["--env", f"{key}={str(val)}"]
+
+    image = data.get("image")
+    if isinstance(image, str) and image.strip():
+        args += ["--image", image.strip()]
+
+    for spec in network_rules(data):
+        args += ["--net-allow", spec]
+    for spec in list_of_strings(data.get("net_deny"), "net_deny"):
+        args += ["--net-deny", spec]
+    for rule in list_of_strings(data.get("http_allow"), "http_allow"):
+        args += ["--http-allow", rule]
+    for rule in list_of_strings(data.get("http_deny"), "http_deny"):
+        args += ["--http-deny", rule]
+    for ca_path in list_of_strings(data.get("http_inject_ca"), "http_inject_ca"):
+        args += ["--http-inject-ca", ca_path]
+
+    args += ["--", *argv]
+    return args, timeout
+
+
+def run_sandlock_executor(data: dict[str, Any], run_id: str) -> dict[str, Any]:
+    sandlock_bin = sandlock_executable()
+    if not sandlock_bin:
+        return {
+            "status": "executor_unavailable",
+            "runtime": "sandlock-riscv-cli",
+            "error": "sandlock binary not found; set ZETTAI_SANDLOCK_BIN or install sandlock in PATH",
+            "executor": executor_status(),
+        }
+
+    CFG.sandbox_root.mkdir(parents=True, exist_ok=True)
+    run_dir = (CFG.sandbox_root / run_id).resolve()
+    run_dir.mkdir(parents=True, exist_ok=True)
+    write_request_files(run_dir, data)
+    args, timeout = build_sandlock_args(data, run_id, run_dir, sandlock_bin)
+    start = time.monotonic()
+    try:
+        proc = subprocess.run(
+            args,
+            cwd=run_dir,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout + 5,
+            check=False,
+        )
+        duration_ms = int((time.monotonic() - start) * 1000)
+        stdout, stdout_truncated = decode_limited(proc.stdout)
+        stderr, stderr_truncated = decode_limited(proc.stderr)
+        return {
+            "status": "succeeded" if proc.returncode == 0 else "failed",
+            "runtime": "sandlock-riscv-cli",
+            "exit_code": proc.returncode,
+            "duration_ms": duration_ms,
+            "stdout": stdout,
+            "stderr": stderr,
+            "stdout_truncated": stdout_truncated,
+            "stderr_truncated": stderr_truncated,
+            "workdir": str(run_dir),
+            "argv": normalize_command(data),
+            "executor": {"sandlock_bin": sandlock_bin},
+        }
+    except subprocess.TimeoutExpired as exc:
+        duration_ms = int((time.monotonic() - start) * 1000)
+        stdout, stdout_truncated = decode_limited(exc.stdout or b"")
+        stderr, stderr_truncated = decode_limited(exc.stderr or b"")
+        return {
+            "status": "timed_out",
+            "runtime": "sandlock-riscv-cli",
+            "exit_code": None,
+            "duration_ms": duration_ms,
+            "stdout": stdout,
+            "stderr": stderr,
+            "stdout_truncated": stdout_truncated,
+            "stderr_truncated": stderr_truncated,
+            "workdir": str(run_dir),
+            "argv": normalize_command(data),
+            "executor": {"sandlock_bin": sandlock_bin},
+        }
+
+
+def charge_usage(user_id: int, api_token_id: int, endpoint: str, charge: int, request_snapshot: str) -> int:
+    with connect() as con:
+        con.execute("begin immediate")
+        fresh = con.execute("select token_balance from users where id=?", (user_id,)).fetchone()
+        if fresh["token_balance"] < charge:
+            con.execute("rollback")
+            raise PermissionError("insufficient token balance")
+        con.execute("update users set token_balance=token_balance-? where id=?", (charge, user_id))
+        con.execute(
+            """
+            insert into usage_events(user_id, api_token_id, endpoint, tokens_used, request_json, created_at)
+            values(?, ?, ?, ?, ?, ?)
+            """,
+            (user_id, api_token_id, endpoint, charge, request_snapshot, now()),
+        )
+        remaining = con.execute("select token_balance from users where id=?", (user_id,)).fetchone()["token_balance"]
+        con.execute("commit")
+        return int(remaining)
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "ZettaiAgentAPI/0.1"
 
@@ -313,7 +608,7 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         try:
             if path == "/health":
-                self.send_json(200, {"ok": True, "db": str(CFG.db_path), "static_root": str(CFG.static_root)})
+                self.send_json(200, {"ok": True, "db": str(CFG.db_path), "static_root": str(CFG.static_root), "executor": executor_status()})
             elif path == "/api/me":
                 self.handle_me()
             elif path == "/api/tokens":
@@ -452,32 +747,25 @@ class Handler(BaseHTTPRequestHandler):
         charge = max(1, CFG.run_token_cost)
         request_snapshot = json.dumps(data, separators=(",", ":"), ensure_ascii=False)[:8192]
         with connect() as con:
-            con.execute("begin immediate")
             fresh = con.execute("select token_balance from users where id=?", (user["id"],)).fetchone()
             if fresh["token_balance"] < charge:
-                con.execute("rollback")
                 raise PermissionError("insufficient token balance")
-            con.execute("update users set token_balance=token_balance-? where id=?", (charge, user["id"]))
-            con.execute(
-                """
-                insert into usage_events(user_id, api_token_id, endpoint, tokens_used, request_json, created_at)
-                values(?, ?, ?, ?, ?, ?)
-                """,
-                (user["id"], token["id"], "/v1/agent/run", charge, request_snapshot, now()),
-            )
-            con.execute("commit")
         run_id = "run_" + secrets.token_hex(8)
+        result = run_sandlock_executor(data, run_id)
+        if result["status"] == "executor_unavailable":
+            self.send_json(503, {"id": run_id, **result, "tokens_charged": 0})
+            return
+        remaining = charge_usage(user["id"], token["id"], "/v1/agent/run", charge, request_snapshot)
         self.send_json(
             200,
             {
                 "id": run_id,
-                "status": "queued",
-                "runtime": "sandlock-riscv-preview",
                 "tokens_charged": charge,
-                "message": "Agent run accepted. The RISC-V Sandlock executor can be attached behind this endpoint.",
+                "token_balance": remaining,
+                **result,
                 "request": {
                     "image": data.get("image", ""),
-                    "command": data.get("command", ""),
+                    "command": data.get("command", data.get("argv", "")),
                     "network": data.get("network", "default-deny"),
                 },
             },

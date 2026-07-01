@@ -64,10 +64,21 @@
                 </svg>
                 <span class="font-mono text-xl font-bold text-brand-300">zett.ai</span>
             </a>
-            <a href="../forum/" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-brand-400/40 hover:text-brand-200">
-                <i data-lucide="messages-square" class="h-4 w-4"></i>
-                Forum
-            </a>
+            <div class="flex items-center gap-1 sm:gap-3">
+                <a href="../forum/" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-2 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-brand-400/40 hover:text-brand-200 sm:px-3">
+                    <i data-lucide="messages-square" class="h-4 w-4"></i>
+                    <span class="hidden sm:inline" data-i18n="nav.forum">Forum</span>
+                </a>
+                <a href="../agent-api/" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-2 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-brand-400/40 hover:text-brand-200 sm:px-3">
+                    <i data-lucide="terminal-square" class="h-4 w-4"></i>
+                    <span class="hidden sm:inline" data-i18n="nav.agentApi">Agent API</span>
+                </a>
+                <a href="https://shop.zettai.us/" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-2 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-brand-400/40 hover:text-brand-200 sm:px-3">
+                    <i data-lucide="shopping-cart" class="h-4 w-4"></i>
+                    <span class="hidden sm:inline" data-i18n="nav.shop">Shop</span>
+                </a>
+                <button type="button" class="lang-toggle rounded-md border border-white/10 px-2 py-2 text-sm font-medium text-slate-200 transition-colors hover:border-brand-400/40 hover:text-brand-200 sm:px-3" aria-label="Switch language">中文</button>
+            </div>
         </div>
     </nav>
 
@@ -141,6 +152,64 @@
             <div id="profile-card" class="mt-5 hidden rounded-lg border border-slate-200 bg-slate-50 p-4"></div>
         </section>
     </main>
+
+    <script>
+        (function() {
+            var translations = {
+                en: {
+                    nav: {
+                        forum: 'Forum',
+                        agentApi: 'Agent API',
+                        shop: 'Shop'
+                    }
+                },
+                zh: {
+                    nav: {
+                        forum: '论坛',
+                        agentApi: '智能体 API',
+                        shop: '商店'
+                    }
+                }
+            };
+
+            function getValue(obj, path) {
+                return path.split('.').reduce(function(value, key) {
+                    return value && value[key];
+                }, obj);
+            }
+
+            function applyLanguage(lang) {
+                var normalized = lang === 'zh' ? 'zh' : 'en';
+                var dictionary = translations[normalized] || translations.en;
+                document.documentElement.lang = normalized === 'zh' ? 'zh-CN' : 'en';
+
+                document.querySelectorAll('[data-i18n]').forEach(function(element) {
+                    var value = getValue(dictionary, element.getAttribute('data-i18n'));
+                    if (value) element.textContent = value;
+                });
+
+                document.querySelectorAll('.lang-toggle').forEach(function(button) {
+                    button.textContent = normalized === 'zh' ? 'EN' : '中文';
+                    button.setAttribute('aria-label', normalized === 'zh' ? 'Switch to English' : '切换到中文');
+                });
+
+                localStorage.setItem('zettai-language', normalized);
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var stored = localStorage.getItem('zettai-language');
+                var initial = stored || ((navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en');
+                applyLanguage(initial);
+
+                document.querySelectorAll('.lang-toggle').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        var next = document.documentElement.lang === 'zh-CN' ? 'en' : 'zh';
+                        applyLanguage(next);
+                    });
+                });
+            });
+        })();
+    </script>
 
     <script>
         var REPO = {
